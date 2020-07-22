@@ -9,7 +9,7 @@ import { By } from '@angular/platform-browser';
 export class DataStub {
   public getPeoples(): Observable<any> {
     return new Observable((observer) => {
-      observer.next({ results: [{ name: 'Joao' }, { name: 'Jose' }] });
+      observer.next([{ name: 'Joao 1' }, { name: 'Jose 2' }]);
     });
   }
 }
@@ -21,9 +21,9 @@ fdescribe('PeoplesListComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [PeoplesListComponent],
-      imports: [ HttpClientTestingModule ],
       providers: [{ provide: PeoplesListService, useClass: DataStub }]
     });
+    // src/app/vehicle/vehicle-bulk/vehicle-bulk-list/vehicle-bulk-list.component.spec.ts:109
 
     fixture = TestBed.createComponent(PeoplesListComponent);
     component = fixture.componentInstance;
@@ -32,7 +32,7 @@ fdescribe('PeoplesListComponent', () => {
 
   it('should list people names', () => {
     const li = fixture.debugElement.queryAll(By.css('#people-list li'));
-    expect(li[0].nativeElement.textContent.trim()).toEqual('Joao');
-    expect(li[1].nativeElement.textContent.trim()).toEqual('Jose');
+    expect(li[0].nativeElement.textContent.trim()).toEqual('Joao 1');
+    expect(li[1].nativeElement.textContent.trim()).toEqual('Jose 2');
   });
 });

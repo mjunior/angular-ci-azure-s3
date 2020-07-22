@@ -12,8 +12,6 @@ export class PeoplesListService {
 
   getPeoples(): Observable<any> {
     return this.http.get<any>('https://swapi.dev/api/people/?format=json')
-      .pipe(map(response => {
-        return response.results;
-      }));
+      .pipe(map(response => response.results.map(item => ({name: item.name}))));
   }
 }
