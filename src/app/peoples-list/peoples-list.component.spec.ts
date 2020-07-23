@@ -14,7 +14,7 @@ export class DataStub {
   }
 }
 
-fdescribe('PeoplesListComponent', () => {
+describe('PeoplesListComponent', () => {
   let component: PeoplesListComponent;
   let fixture: ComponentFixture<PeoplesListComponent>;
 
@@ -30,7 +30,7 @@ fdescribe('PeoplesListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should list people names', () => {
+  fit('should list people names', () => {
     const li = fixture.debugElement.queryAll(By.css('#people-list li'));
     expect(li[0].nativeElement.textContent.trim()).toEqual('Joao 1');
     expect(li[1].nativeElement.textContent.trim()).toEqual('Jose 2');

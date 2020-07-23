@@ -1,5 +1,7 @@
 <ul id="people-list">
-  <li (click)="selectPeople(item)" *ngFor="let item of people"> {{item.name}} </li>
+  <li (click)="selectPeople(item)" *ngFor="let item of people">
+    <app-person-item [name]="item.name"></app-person-item>
+  </li>
 </ul>
-222
+
 <button id="button-send" (click)="buttonClicked()">Clica aqui</button>
