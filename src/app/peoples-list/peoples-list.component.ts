@@ -3,7 +3,7 @@ import { PeoplesListService } from './peoples-list.service';
 
 @Component({
   selector: 'app-peoples-list',
-  templateUrl: './peoples-list.component.html'
+  templateUrl: './people-list.component.html'
 })
 export class PeoplesListComponent implements OnInit {
 
@@ -14,6 +14,10 @@ export class PeoplesListComponent implements OnInit {
     this.peopleService.getPeoples().subscribe((data) => {
       this.people = data;
     });
+  }
+
+  buttonClicked() {
+    console.log('Clicou');
   }
 
 }

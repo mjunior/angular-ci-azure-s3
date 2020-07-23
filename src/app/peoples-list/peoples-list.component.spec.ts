@@ -35,4 +35,6 @@ fdescribe('PeoplesListComponent', () => {
     expect(li[0].nativeElement.textContent.trim()).toEqual('Joao 1');
     expect(li[1].nativeElement.textContent.trim()).toEqual('Jose 2');
   });
+
+  // Spy - clickButton callThrought
 });
