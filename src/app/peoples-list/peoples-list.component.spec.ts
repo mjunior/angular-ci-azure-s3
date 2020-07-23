@@ -23,18 +23,15 @@ describe('PeoplesListComponent', () => {
       declarations: [PeoplesListComponent],
       providers: [{ provide: PeoplesListService, useClass: DataStub }]
     });
-    // src/app/vehicle/vehicle-bulk/vehicle-bulk-list/vehicle-bulk-list.component.spec.ts:109
 
     fixture = TestBed.createComponent(PeoplesListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  fit('should list people names', () => {
+  it('should list people names', () => {
     const li = fixture.debugElement.queryAll(By.css('#people-list li'));
     expect(li[0].nativeElement.textContent.trim()).toEqual('Joao 1');
     expect(li[1].nativeElement.textContent.trim()).toEqual('Jose 2');
   });
-
-  // Spy - clickButton callThrought
 });
