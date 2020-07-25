@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { PeoplesListService } from '../peoples-list.service';
 
 @Component({
   selector: 'app-person-item',

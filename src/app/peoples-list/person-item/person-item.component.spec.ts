@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed} from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { PersonItemComponent } from './person-item.component';
 
-xdescribe('PersonItemComponent', () => {
+describe('PersonItemComponent', () => {
   let component: PersonItemComponent;
   let fixture: ComponentFixture<PersonItemComponent>;
 

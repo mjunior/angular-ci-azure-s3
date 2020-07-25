@@ -5,6 +5,7 @@ import { PeoplesListService } from './peoples-list.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { By } from '@angular/platform-browser';
+import { PersonItemComponent } from './person-item/person-item.component';
 
 export class DataStub {
   public getPeoples(): Observable<any> {
@@ -20,7 +21,7 @@ describe('PeoplesListComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [PeoplesListComponent],
+      declarations: [PeoplesListComponent, PersonItemComponent],
       providers: [{ provide: PeoplesListService, useClass: DataStub }]
     });
 
@@ -30,8 +31,7 @@ describe('PeoplesListComponent', () => {
   });
 
   it('should list people names', () => {
-    const li = fixture.debugElement.queryAll(By.css('#people-list li'));
-    expect(li[0].nativeElement.textContent.trim()).toEqual('Joao 1');
-    expect(li[1].nativeElement.textContent.trim()).toEqual('Jose 2');
+    const li = fixture.debugElement.queryAll(By.css('app-person-item'));
+    expect(li.length).toEqual(2);
   });
 });
