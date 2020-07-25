@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { PeoplesListComponent } from './peoples-list/peoples-list.component';
 import { PeoplesListService } from './peoples-list/peoples-list.service';
 import { PersonItemComponent } from './peoples-list/person-item/person-item.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { PersonItemComponent } from './peoples-list/person-item/person-item.comp
   imports: [
     BrowserModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NoopAnimationsModule,
+    MatCardModule
   ],
   providers: [ PeoplesListService ],
   bootstrap: [ AppComponent ]
