@@ -6,6 +6,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { By } from '@angular/platform-browser';
 import { PersonItemComponent } from './person-item/person-item.component';
+import { MatCardModule } from '@angular/material/card';
+import { MockComponent } from 'ng-mocks';
 
 export class DataStub {
   public getPeoples(): Observable<any> {
@@ -21,8 +23,8 @@ describe('PeoplesListComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [PeoplesListComponent, PersonItemComponent],
-      providers: [{ provide: PeoplesListService, useClass: DataStub }]
+      declarations: [PeoplesListComponent, MockComponent(PersonItemComponent) ],
+      providers: [{ provide: PeoplesListService, useClass: DataStub }],
     });
 
     fixture = TestBed.createComponent(PeoplesListComponent);

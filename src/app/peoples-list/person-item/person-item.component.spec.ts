@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed} from '@angular/core/testing';
 
 import { By } from '@angular/platform-browser';
 import { PersonItemComponent } from './person-item.component';
+import { MatCardModule } from '@angular/material/card';
 
 describe('PersonItemComponent', () => {
   let component: PersonItemComponent;
@@ -10,6 +11,7 @@ describe('PersonItemComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [PersonItemComponent],
+      imports: [MatCardModule]
     });
 
     fixture = TestBed.createComponent(PersonItemComponent);
