@@ -39,6 +39,6 @@ describe("PeoplesListComponent", () => {
 
   it("should list people names", () => {
     const li = fixture.debugElement.queryAll(By.css("app-person-item"));
-    expect(li.length).toEqual(2);
+    expect(li.length).toEqual(3);
   });
 });
