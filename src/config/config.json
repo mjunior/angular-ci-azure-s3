@@ -1,0 +1,12 @@
+{
+  "environment": "local",
+  "production": {
+    "apiUrl": "http://production.com"
+  },
+  "staging": {
+    "apiUrl": "http://stg.com"
+  },
+  "local": {
+    "apiUrl": "http://local.com"
+  }
+}
