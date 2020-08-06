@@ -1,76 +1,195 @@
 {
 	"AWSTemplateFormatVersion": "2010-09-09",
+	"Description": "Static website hosting with S3 and CloudFront",
+	"Parameters": {
+		"BucketName": {
+			"Type": "String",
+			"Default": "alelo03-LupBucketName"
+		}
+	},
 	"Resources": {
 		"S3Bucket": {
 			"Type": "AWS::S3::Bucket",
 			"Properties": {
-				"AccessControl": "PublicRead",
+				"BucketName": {
+					"Ref": "BucketName"
+				},
 				"WebsiteConfiguration": {
-					"IndexDocument": "index.html",
-					"ErrorDocument": "error.html"
+					"ErrorDocument": "index.html",
+					"IndexDocument": "index.html"
 				}
-			},
-			"DeletionPolicy": "Retain"
+			}
 		},
-		"BucketPolicy": {
+		"ReadPolicy": {
 			"Type": "AWS::S3::BucketPolicy",
 			"Properties": {
-				"PolicyDocument": {
-					"Id": "MyPolicy",
-					"Version": "2012-10-17",
-					"Statement": [
-						{
-							"Sid": "PublicReadForGetBucketObjects",
-							"Effect": "Allow",
-							"Principal": "*",
-							"Action": "s3:GetObject",
-							"Resource": {
-								"Fn::Join": [
-									"",
-									[
-										"arn:aws:s3:::",
-										{
-											"Ref": "S3Bucket"
-										},
-										"/*"
-									]
-								]
-							}
-						}
-					]
-				},
 				"Bucket": {
 					"Ref": "S3Bucket"
+				},
+				"PolicyDocument": {
+					"Statement": [
+						{
+							"Action": "s3:GetObject",
+							"Effect": "Allow",
+							"Resource": {
+								"Fn::Sub": "arn:aws:s3:::${S3Bucket}/*"
+							},
+							"Principal": "*"
+						}
+					]
+				}
+			}
+		},
+		"CloudFrontOriginAccessIdentity": {
+			"Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+			"Properties": {
+				"CloudFrontOriginAccessIdentityConfig": {
+					"Comment": {
+						"Ref": "S3Bucket"
+					}
+				}
+			}
+		},
+		"CloudFrontDistribution": {
+			"Type": "AWS::CloudFront::Distribution",
+			"Properties": {
+				"DistributionConfig": {
+					"CustomErrorResponses": [
+						{
+							"ErrorCode": 403,
+							"ResponseCode": 404,
+							"ResponsePagePath": "/index.html"
+						}
+					],
+					"DefaultCacheBehavior": {
+						"AllowedMethods": [
+							"GET",
+							"HEAD",
+							"OPTIONS"
+						],
+						"CachedMethods": [
+							"GET",
+							"HEAD",
+							"OPTIONS"
+						],
+						"Compress": true,
+						"DefaultTTL": 3600,
+						"ForwardedValues": {
+							"Cookies": {
+								"Forward": "none"
+							},
+							"QueryString": false
+						},
+						"MaxTTL": 86400,
+						"MinTTL": 60,
+						"TargetOriginId": "s3origin",
+						"ViewerProtocolPolicy": "allow-all"
+					},
+					"DefaultRootObject": "/index.html",
+					"Enabled": true,
+					"HttpVersion": "http2",
+					"Origins": [
+						{
+							"DomainName": {
+								"Fn::GetAtt": [
+									"S3Bucket",
+									"DomainName"
+								]
+							},
+							"Id": "s3origin",
+							"S3OriginConfig": {
+								"OriginAccessIdentity": {
+									"Fn::Sub": "origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}"
+								}
+							}
+						}
+					],
+					"PriceClass": "PriceClass_All"
+				}
+			}
+		},
+		"PublishUser": {
+			"Type": "AWS::IAM::User",
+			"Properties": {
+				"Policies": [
+					{
+						"PolicyName": {
+							"Fn::Sub": "publish-to-${S3Bucket}"
+						},
+						"PolicyDocument": {
+							"Statement": [
+								{
+									"Action": "s3:*",
+									"Effect": "Allow",
+									"Resource": [
+										{
+											"Fn::Sub": "arn:aws:s3:::${S3Bucket}"
+										},
+										{
+											"Fn::Sub": "arn:aws:s3:::${S3Bucket}/*"
+										}
+									]
+								}
+							]
+						}
+					}
+				]
+			}
+		},
+		"PublishCredentials": {
+			"Type": "AWS::IAM::AccessKey",
+			"Properties": {
+				"UserName": {
+					"Ref": "PublishUser"
 				}
 			}
 		}
 	},
 	"Outputs": {
-		"WebsiteURL": {
+		"Bucket": {
+			"Description": "S3 Bucket Name",
+			"Value": {
+				"Ref": "S3Bucket"
+			}
+		},
+		"BucketUrl": {
+			"Description": "S3 Bucket Url",
 			"Value": {
 				"Fn::GetAtt": [
 					"S3Bucket",
 					"WebsiteURL"
 				]
-			},
-			"Description": "URL for website hosted on S3"
+			}
 		},
-		"S3BucketSecureURL": {
+		"AccessKeyId": {
+			"Description": "S3 Access Key",
 			"Value": {
-				"Fn::Join": [
-					"",
-					[
-						"https://",
-						{
-							"Fn::GetAtt": [
-								"S3Bucket",
-								"DomainName"
-							]
-						}
-					]
+				"Ref": "PublishCredentials"
+			}
+		},
+		"AccessKeySecret": {
+			"Description": "S3 Secret Key",
+			"Value": {
+				"Fn::GetAtt": [
+					"PublishCredentials",
+					"SecretAccessKey"
 				]
-			},
-			"Description": "Name of S3 bucket to hold website content"
+			}
+		},
+		"DistributionId": {
+			"Description": "CloudFront Distribution ID",
+			"Value": {
+				"Ref": "CloudFrontDistribution"
+			}
+		},
+		"Domain": {
+			"Description": "Cloudfront Domain",
+			"Value": {
+				"Fn::GetAtt": [
+					"CloudFrontDistribution",
+					"DomainName"
+				]
+			}
 		}
-	}
+	},
 }
