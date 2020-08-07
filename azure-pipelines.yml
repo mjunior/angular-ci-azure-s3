@@ -5,8 +5,8 @@ jobs:
   - job: Build
     steps:
     - task: UseNode@1
-      displayName: 'Use Node 12.18.3'
-
+      inputs:
+        version: '12.18.3'
     - task: Npm@1
       displayName: 'npm install'
       inputs:
@@ -43,7 +43,6 @@ jobs:
       displayName: 'Publish Pipeline Artifact'
       inputs:
         artifact: dist
-
     - task: AmazonWebServices.aws-vsts-tools.CloudFormationCreateOrUpdateStack.CloudFormationCreateOrUpdateStack@1
       displayName: 'Create/Update Stack: preview-$(Build.SourceBranchName)'
       inputs:
