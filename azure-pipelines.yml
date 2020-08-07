@@ -4,8 +4,55 @@ variables:
 jobs: 
   - job: Build
     steps:
-    - script: |
-        npm install -g @angular/cli
-        npm install
-        ng build --prod
-      displayName: 'npm install and build'
+    - task: UseNode@1
+      displayName: 'Use Node 12.18.3'
+
+    - task: Npm@1
+      displayName: 'npm install'
+      inputs:
+        verbose: false
+
+    - task: Npm@1
+      displayName: 'npm run test'
+      inputs:
+        command: custom
+        verbose: false
+        customCommand: 'run-script test'
+
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results **/testresults/junit/unit-test-result.xml'
+      inputs:
+        testResultsFiles: '**/testresults/junit/unit-test-result.xml'
+      condition: always()
+
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Publish code coverage from **/testresults/coverage/code-coverage.xml'
+      inputs:
+        codeCoverageTool: Cobertura
+        summaryFileLocation: '**/testresults/coverage/code-coverage.xml'
+      condition: always()
+
+    - task: Npm@1
+      displayName: 'npm build'
+      inputs:
+        command: custom
+        verbose: false
+        customCommand: 'run build'
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Pipeline Artifact'
+      inputs:
+        artifact: dist
+
+    - task: AmazonWebServices.aws-vsts-tools.CloudFormationCreateOrUpdateStack.CloudFormationCreateOrUpdateStack@1
+      displayName: 'Create/Update Stack: preview-$(Build.SourceBranchName)'
+      inputs:
+        awsCredentials: AzureS3MJRStaging
+        regionName: 'sa-east-1'
+        stackName: 'preview-$(Build.SourceBranchName)'
+        templateFile: 's3-cloudformation.json'
+        templateParametersSource: inline
+        templateParameters: '[{ "ParameterKey": "BucketName", "ParameterValue": "$(Build.SourceBranchName) " }]'
+      enabled: false
+
+
